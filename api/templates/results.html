@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ anime_title }} search</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+        img.cover { max-width: 200px; border-radius: 6px; }
+        .anime-box { display: flex; gap: 20px; align-items: flex-start; }
+        .anime-info { max-width: 700px; }
+    </style>
+</head>
+<body>
+    <h1>Results</h1>
+
+    <div class="anime-box">
+        {% if cover %}
+            <img class="cover" src="{{ cover }}" alt="{{ anime_title }}">
+        {% endif %}
+        <div class="anime-info">
+            <h2>{{ anime_title }}</h2>
+            <p><b>Genres:</b> {{ genres }}</p>
+            <p><b>Popularity:</b> {{ popularity }}</p>
+            <p>{{ description }}{% if description|length >= 800 %}...{% endif %}</p>
+            <p><a href="{{ site_url }}" target="_blank">View on AniList</a></p>
+        </div>
+    </div>
+
+    <hr>
+    <h3>Twitch channels related to "<i>{{ chosen_title }}</i>"</h3>
+
+    {% if not twitch_list %}
+        <p>No Twitch channels found for "<b>{{ chosen_title }}</b>".</p>
+    {% else %}
+        <ul style="list-style:none;padding-left:0;">
+            {% for ch in twitch_list %}
+                <li style="margin-bottom:18px;">
+                    <img src="{{ ch.thumbnail_url }}" alt="{{ ch.name }}" style="width:80px;border-radius:6px;vertical-align:middle;margin-right:12px;">
+                    <b>{{ ch.name }}</b> 
+                    {% if ch.is_live %}
+                        <span style="color:red">(Live{% if ch.viewers %} - {{ ch.viewers }} viewers{% endif %})</span>
+                    {% else %}
+                        (offline)
+                    {% endif %}<br>
+                    <i>{{ ch.title or "No stream title" }}</i><br>
+                    <a href="https://twitch.tv/{{ ch.login }}" target="_blank">https://twitch.tv/{{ ch.login }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <hr>
+    <p><a href="/">Search again</a></p>
+</body>
+</html>
